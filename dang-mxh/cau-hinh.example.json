@@ -1,0 +1,25 @@
+{
+  "_huong_dan": "Copy to cau-hinh.json. One block per account. khung_gio = daily post times (Asia/Taipei). dang_ngay=true: post as soon as a video is queued (min gap cach_toi_thieu_phut). bat=false pauses the account. username = the @handle the login MUST match, otherwise nothing is posted.",
+  "repo": "E:/01_YouTube/00_Dung-chung/social-auto-upload",
+  "thu_muc_drive": "G:/My Drive/MXH - Trang thai",
+  "chu_ky_phut": 10,
+  "cua_so_phut": 120,
+  "kiem_tra_dang_nhap_moi_gio": 12,
+  "so_lan_thu_lai": 2,
+  "thoi_gian_toi_da_phut": 20,
+  "tai_khoan": [
+    {"mang": "tiktok", "cookie": "channel_a", "ten_hien_thi": "Channel A", "kenh": "ChannelA",
+     "thu_muc": "E:/01_YouTube/02_ChannelA/dang-mxh/tiktok_channel_a", "khung_gio": [], "bat": true,
+     "dang_ngay": true, "cach_toi_thieu_phut": 30, "username": "channel_a_handle"},
+    {"mang": "instagram", "cookie": "channel_b", "ten_hien_thi": "Channel B", "kenh": "ChannelB",
+     "thu_muc": "E:/01_YouTube/04_ChannelB/dang-mxh/instagram_channel_b", "khung_gio": ["12:00", "20:00"], "bat": true,
+     "username": "channel_b_handle"},
+    {"mang": "threads", "cookie": "channel_b", "ten_hien_thi": "Channel B", "kenh": "ChannelB",
+     "thu_muc": "E:/01_YouTube/04_ChannelB/dang-mxh/threads_channel_b", "khung_gio": ["12:00", "20:00"], "bat": true,
+     "username": "channel_b_handle", "cuoi_bai": "Follow us on Instagram"},
+    {"mang": "facebook", "cookie": "fb_channel_a", "ten_hien_thi": "Channel A", "kenh": "ChannelA",
+     "thu_muc": "E:/01_YouTube/02_ChannelA/dang-mxh/facebook_channel_a", "bat": true, "dang_ngay": true,
+     "cach_toi_thieu_phut": 30, "page": "Channel A Fanpage", "page_id": "000000000000000",
+     "chep_tu": "E:/01_YouTube/02_ChannelA/dang-mxh/tiktok_channel_a", "chep_tu_luc": "2026-01-01 00:00"}
+  ]
+}

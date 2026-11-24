@@ -1,0 +1,38 @@
+# PUBLIC repo: chan het, chi cho phep thu muc code. Cookie, token, mat khau, so lieu, video KHONG BAO GIO len day.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/dang-mxh/
+!/kiem-tra-mxh/
+!/he-thong-mxh/
+!/social-auto-upload-patches/
+
+# du lieu / bi mat / sinh ra khi chay
+*.json
+!/dang-mxh/cau-hinh.example.json
+*.log
+*.lock
+*.xong
+*.exe
+*.html
+*.png
+*.jpg
+*.mp4
+*.txt
+*.bak*
+__pycache__/
+cookies/
+chan-doan/
+bi-mat/
+hop-thu-cho/
+du-lieu/
+bao-cao/
+ban-da-kiem/
+.dang-chay*
+
+# chua ID Google Sheet/Drive + ten tai khoan rieng -> chi giu tren laptop
+/dang-mxh/*.gs
+/dang-mxh/HUONG-DAN*
+/dang-mxh/thu_bang_theo_doi.js
+.repo-gui/
