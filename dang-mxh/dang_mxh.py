@@ -1021,6 +1021,18 @@ def phuc_hoi(cfg, data, acc) -> None:
     luu(data)
 
 
+def kiem_loi_kenh(acc: dict, item: dict) -> list[str]:
+    """Cong chan theo so loi <kenh>/LOI.md (kiem-tra-mxh/kiem_loi.py). Kiem khong duoc -> raise -> khong dang."""
+    d = str(Path(__file__).resolve().parent.parent / "kiem-tra-mxh")
+    if d not in sys.path:
+        sys.path.append(d)
+    import kiem_loi
+    kenh = {"vietwan": "vietwan", "econlazypack": "econ"}.get(str(acc.get("kenh", "")).strip().lower())
+    if not kenh:
+        return []   # may dang chi co 2 kenh nay; them kenh moi thi them vao bang tren
+    return kiem_loi.kiem(kenh, list(dict.fromkeys((item["video"], item["txt"]))))
+
+
 def dang_1_video(cfg, data, acc, t: dt.datetime, key: str, item: dict, d: dict, sys_errors: list) -> bool:
     """Dang 1 video (item tu scan_queue) cho khung 'key'. Tra False neu phai dung ca luot (khong ghi duoc so)."""
     ma = acc["ma"]
@@ -1050,6 +1062,19 @@ def dang_1_video(cfg, data, acc, t: dt.datetime, key: str, item: dict, d: dict, 
             return True
         else:
             rec.pop("cho_xn", None)               # da cho du, bai khong len -> duoc tai len lai (lan ke)
+    if not chi_kiem:      # moi lan tai len (ke ca tai lai) deu qua cong; chi kiem bai da bam Post thi khong
+        try:
+            sai = kiem_loi_kenh(acc, item)
+        except Exception as e:
+            msg = f"Không kiểm được LOI.md của kênh {acc.get('kenh')} nên không đăng: {type(e).__name__}: {e}"
+            sys_errors.append(msg)
+            log(f"{ma} {key}: {msg}")
+            return True
+        if sai:
+            rec["n"] = cfg["so_lan_thu_lai"]      # loi noi dung: chuyen thang sang 'loi', thu lai vo ich
+            ap_dung(cfg, data, acc, key, tep, item["caption"],
+                    {"ok": False, "loi": "Bị chặn theo LOI.md (chưa đăng): " + " | ".join(sai)})
+            return True
     if chi_kiem:
         rec["chi_kiem"] = True
     else:

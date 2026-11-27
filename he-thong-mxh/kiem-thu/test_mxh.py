@@ -91,6 +91,44 @@ def test_kiem_bai():
     assert vd == []
 
 
+def test_kiem_loi_chan():
+    sys.path.insert(0, str(R.parent / "kiem-tra-mxh"))
+    sys.path.insert(0, str(R.parent / "dang-mxh"))
+    import kiem_loi as KL
+    import dang_mxh as DM
+    with tempfile.TemporaryDirectory() as d:
+        md, txt = Path(d) / "LOI.md", Path(d) / "VIETWAN_a.txt"
+        md.write_text("KENH: vietwan\n- [X1] CAM caption /cam_nay/i :: thu\n", encoding="utf-8")
+        txt.write_text("Tin Đài Loan cho người Việt\n", encoding="utf-8")
+        assert not any("[X1]" in x for x in KL.kiem("vietwan", [txt], str(md)))
+        txt.write_text("Tin Đài Loan có CAM_NAY\n", encoding="utf-8")
+        assert any("[X1]" in x for x in KL.kiem("vietwan", [txt], str(md)))
+        md.write_text("KENH: vietwan\n- [X1] CAM caption /(hong :: thu\n", encoding="utf-8")
+        assert KL.main(["vietwan", str(txt), "--loi", str(md)]) == 1      # luat viet sai -> chan
+        for sai in ("- [X1] Cam caption /a/ :: x", "* [X1] CAM caption /a/ :: x", "- [X1] CAM video /a/ :: x", ""):
+            md.write_text(f"KENH: vietwan\n## Máy kiểm\n{sai}\n", encoding="utf-8")
+            assert KL.main(["vietwan", str(txt), "--loi", str(md)]) == 1, sai
+        md.write_text("KENH: vietwan\n- [X1] CAM caption /cam_nay/i :: thu\n", encoding="utf-8")
+        txt.write_text("có cam_nay\n", encoding="utf-16")
+        assert any("[X1]" in x for x in KL.kiem("vietwan", [txt], str(md)))
+        assert KL.main(["vietwan", str(Path(d) / "khong-co")]) == 1       # khong co file -> chan
+
+    # may dang: bi chan -> khong goi ham dang, video chuyen sang loi
+    goi, ghi = [], []
+    DM.POSTERS = {"tiktok": lambda *a: goi.append(1) or {"ok": True}}
+    DM.ly_do_chan = lambda *a: None
+    DM.kiem_loi_kenh = lambda acc, item: ["[X1] sai"]
+    DM.ap_dung = lambda cfg, data, acc, key, tep, cap, res: ghi.append(res)
+    item = {"video": Path("a.mp4"), "txt": Path("a.txt"), "thumb": None, "caption": "c"}
+    data = {"da_xu_ly": {}, "dang_nhap": {}, "thu": {}, "dang_do": {}}
+    DM.dang_1_video({"so_lan_thu_lai": 2}, data, {"ma": "tiktok_v", "mang": "tiktok"}, t, "k", item, {}, [])
+    assert not goi and "LOI.md" in ghi[0]["loi"] and data["thu"]["tiktok_v|k"]["n"] == 2
+    # tai LAI sau khi het gio cho xac nhan cung phai qua cong
+    data["thu"] = {"tiktok_v|k": {"n": 1, "cho_xn": iso(t.replace(tzinfo=None) - dt.timedelta(hours=2))}}
+    DM.dang_1_video({"so_lan_thu_lai": 2, "cho_xac_nhan_phut": 30}, data, {"ma": "tiktok_v", "mang": "tiktok"}, t.replace(tzinfo=None), "k", item, {}, [])
+    assert not goi and len(ghi) == 2
+
+
 if __name__ == "__main__":
     for f in [v for k, v in dict(globals()).items() if k.startswith("test_")]:
         f()
